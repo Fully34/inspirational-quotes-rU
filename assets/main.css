@@ -154,7 +154,7 @@ h1, h2, h3,h4,h5,h6 {
 }
 
 .btn {
-   outline:none;
+    outline:none;
 }
 
 .submit-btn {
@@ -167,47 +167,70 @@ h1, h2, h3,h4,h5,h6 {
                         /* ~~~ Dynamic Content ~~~ */ 
 /*===========================================================================*/
 
+.all-quotes {
+    list-style: none;
+    padding-right: 40px;
+}
+
 .quote-container{
+    border-bottom: 2px dashed #455791;
+    border-top: 2px dashed #455791;
+    border-bottom-right-radius: 9px;
+    border-bottom-left-radius: 9px; 
+    border-top-right-radius: 9px; 
+    border-top-left-radius: 9px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.top {
     position: relative;
 }
 
+
 .delete-btn {
-    position: absolute;
-    height: 10px;
-    width: 10px;
-    left: 5px;
+    color: #455791;
+    display: inline-block;
+    float: left;
+    font-size: 0.7em;
+    left: 30px;
     top: 5px;
+    text-decoration: none;
 }
 
+.delete-btn:hover {
+    text-decoration: underline;
+}
 
 .quote-content{
     list-style-type: none;
 }
 
-.quote-title{
-
-}
-
-.rating{
-    position: absolute;
-    right: 5px;
+.rating {
+    position: relative;
+    display: inline-block;
+    float:right;
+    margin: 0;
+    /*position: absolute;*/
+    right: 25px;
     top: 5px;
     font-size: 30px;
     color: #455791;
 }
 
 .quote-text{
-
+    word-wrap: break-word;
 }
 
 .quote-author{
+    color: gray;
+    display: inline-block;
+    position: relative;
+    float: right;
+    right: 25px;
+    bottom: 15px;
 
 }
-
-
-
-
-
 
 
 
