@@ -5,6 +5,7 @@
     <title>Inspirational Quotes</title>
     <link rel="stylesheet" href="assets/normalize.css">
     <link rel="stylesheet" href="assets/main.css">
+    <link href='http://fonts.googleapis.com/css?family=Michroma|PT+Sans+Narrow' rel='stylesheet' type='text/css'>
 </head>
 <body>
     
@@ -12,50 +13,52 @@
         
         <div class="main-container clearfix">
             
-            <div class="header-wrapper clearfix"></div>            
-
-            <div class="nav-wrapper clearfix"></div>
-
-            <div class="content-wrapper">
+            <div class="header-wrapper clearfix pink-border">
                 
-                <div class="section-header-container">
+                <h1 class="title-text">HERE BE SOME QUOTES</h1>
 
+            </div><!-- header wrapper END -->
+
+
+            <div class="content-wrapper pink-border margin-bottom-spacing">
+                
+                <div class="break-container margin-bottom-spacing">
                     <hr class="line-break">
-                    <span class="section-header">Add Quote</span>
-
+                    <span class="break-text pt-sans">Add Yer Quotes Here!</span>
                 </div>
-                
-                <div class="form-container">
+                 
+                <div class="form-container margin-bottom-spacing">
                     <form action="submit" class="add-quote">
-                        
+
+                        <label for="add-author" class="label"> Add Author:</label>
                         <input type="text" class="add-author">
 
+                        <label for="enter-quote" class="label">What be yer quote?</label>
                         <textarea class="enter-quote"></textarea>
 
-                        <button class="submit-btn">Submit</button>
+                        <button class="btn submit-btn">Submit</button>
+                            
+                        <button class="btn undo-btn">UNDO LAST ACTION!</button>
 
                     </form>
-                </div>
+                </div> <!-- form container END -->
 
-                <div class="section-header-container">
-
+                <div class="break-container margin-bottom-spacing">
                     <hr class="line-break">
-                    <span class="section-header">Quotes</span>
-
+                    <span class="break-text pt-sans">Come See What We Got</span>
                 </div>
 
                 <ul class="all-quotes">
                     
                     
 
-                </ul>
+                </ul> <!-- All quotes END -->
 
-            </div>
+            </div> <!-- content wrapper END -->
 
-        </div>
+        </div> <!-- main container END -->
 
-
-    </div>
+    </div> <!-- big wrapper END -->
 
 
 
