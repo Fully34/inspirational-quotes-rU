@@ -1,9 +1,17 @@
     
-$(function(){
+// $(function(){
 
 
-    //============================== Setting undo Variable ==============================//
+    //============================== Setting Global Variables ==============================//
             
+
+    var undo; // -> this only works for one deep undo
+
+    var quoteArr = [];
+
+    var delNum = 0;
+
+    var idNum = 0;
 
     //===========================================================================//
                             /* ~~~ Create quote structure ~~~ */ 
@@ -23,23 +31,59 @@ $(function(){
             liQ  : $('<li class="quote-text"></li'),
             br   : $('<br>'),
             liA  : $('<li class="quote-author"></div>'),
-
         }
 
         return els;
     };
 
-    var undo; // -> this only works for one deep undo
 
-    // generate structure here
-    var quoteItem = function(qText, qAuthor){
+    // generate objects here
+    var quoteGen = function(qText, qAuthor, rating){
+
+        // create object for the quote
+        var quoteObject = { 
+
+            qtext   : qText,
+            author  : qAuthor,
+            rating  : rating || null,
+            deleted : delNum,
+            id      : idNum,
+        }
+
+        quoteArr.push(quoteObject);
+
+        idNum ++;
+
+        // loop over quoteArr
+        $('.all-quotes').html(quoteArr.map(function(obj) {
+
+            return quoteStruc(obj);
+
+        }).join('') )
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+//============================== NEW STRUCTURE ==============================//
+        
+    var quoteStruc = function(obj){
 
         // fresh batch of elements
         var newEls = elements();
 
-        // new vars so we don't have to use dot notation all over the place -> could get messy since we will be chaining a lot of methods
+        // new vars so we don't have to use dot notation all over the place -> could get messy since we will be chaining methods
         var topC = newEls.topC;
-        var del = newEls.del
+        var del = newEls.del;
         var p = newEls.p;
         var liC = newEls.liC;
         var ul = newEls.ul;
@@ -47,28 +91,14 @@ $(function(){
         var br = newEls.br;
         var liA = newEls.liA;
 
-        // create object for the quote
-        var quoteObject = { 
-
-            qtext    : qText,
-            author  : qAuthor,
-            deleted : delNum,
-        }
-
         // text will be dynamically added from $('.enter-quote').val() and $('add-author').val();
-        liQ.text('"' + quoteObject.qtext + '"');
-        liA.text (" - " + quoteObject.author);
+        liQ.text('"' + obj.qtext + '"');
+        liA.text (" - " + obj.author);
 
         // rating content:
         var ratingText = ['*','*','*','*','*'].join('   ');
         p.text(ratingText);
 
-        // make a big X for del
-        del.val("X");
-
-
-        //======================= New function to create structure ==============================//
-                
         // top bar is the delete button and the rating
         var topBar = topC.append(del, p);
 
@@ -81,16 +111,20 @@ $(function(){
         // append content to container
         var whole = qContain.append(qContent);
 
-        // set equal to undo variable so we can remove it if we want to
-        // undo = whole.addClass('created'); // created class will be used for our undo function
+        // console.log(whole);
 
-        // push quote object into array
-        quoteArr.push(quoteObject);
-        
-        // 
-        $('.all-quotes').append(whole);
+        // console.log(whole.html());
 
+        // Need to use dummy div b/c .html() only returns the inner html, so we were losing the container for each quote. 
+        return $('<div>').append(whole).html();
     };
+
+
+
+
+
+
+
 
 
 //============================== Dynamically add quotes ==============================//
@@ -102,49 +136,52 @@ $(function(){
         var quoteText = $('.enter-quote').val();
         var quoteAuthor = $('.add-author').val();
 
-        quoteItem(quoteText, quoteAuthor);
+        quoteGen(quoteText, quoteAuthor);
     });
 
 
 //============================== undo last action ==============================//
 
-    // $('.undo-btn').on('click', function(event) {
+    $('.undo-btn').on('click', function(event) {
 
-    //     event.preventDefault();
+        event.preventDefault();
 
-    //     if( undo.hasClass('created') ) {
+        // if( undo.hasClass('created') ) {
 
-    //         undo.remove();
+        //     undo.remove();
 
-    //         undo.removeClass('created');
+        //     undo.removeClass('created');
 
-    //     } else if ( !undo.hasClass('created') ) {
+        // } else if ( !undo.hasClass('created') ) {
 
-    //         $('.all-quotes').append(undo);
+        //     $('.all-quotes').append(undo);
 
-    //         undo.addClass('created');
-    //     }
-    // });
+        //     undo.addClass('created');
+        // }
+    });
         
 
 //============================== Delete ==============================//
 
     // This function will delete the parent container of the anchor we click
 
-    $('.all-quotes').on('click', '.delete-btn', function(event) {
+    // $('.all-quotes').on('click', '.delete-btn', function(event) {
 
-        event.preventDefault();
+    //     event.preventDefault();
         
-        var whatWeDeleted = $(this).closest('.quote-container');
+    //     var whatWeDeleted = $(this).closest('.quote-container');
 
-        whatWeDeleted.removeClass('created');
+    //     whatWeDeleted.removeClass('created');
 
-        console.log(whatWeDeleted);
+    //     console.log(whatWeDeleted);
 
-        undo = whatWeDeleted;
+    //     undo = whatWeDeleted;
 
-        whatWeDeleted.remove();
-    })
+    //     whatWeDeleted.remove();
+    // })
+        
+    // NOT LOOKING AT JQUERY OBJECTS ANYMORE FOR DELETEING --> LOOK AT THE OBJECTS ARRAY AND FIND THE OBJECT IDNUM THAT CORRESPONDS TO WHICHEVER DELETE BUTTON WE PRESSED
         
 
-});
+
+// });
