@@ -5,10 +5,14 @@
     <title>Inspirational Quotes</title>
     <link rel="stylesheet" href="assets/normalize.css">
     <link rel="stylesheet" href="assets/main.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href='http://fonts.googleapis.com/css?family=Michroma|PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+
+
+
+
 </head>
 <body>
-    
     <div class=".big-wrapper">
         
         <div class="main-container clearfix">
@@ -30,11 +34,11 @@
                 <div class="form-container margin-bottom-spacing">
                     <form action="submit" class="add-quote">
 
-                        <label for="add-author" class="label"> Add Author:</label>
-                        <input type="text" class="add-author">
-
                         <label for="enter-quote" class="label">What be yer quote?</label>
                         <textarea class="enter-quote"></textarea>
+
+                        <label for="add-author" class="label"> Add Author:</label>
+                        <input type="text" class="add-author">
 
                         <button class="btn submit-btn">Submit</button>
                             
@@ -49,8 +53,8 @@
                 </div>
 
                 <ul class="all-quotes">
-                    
-                    
+
+                    <div class="rateit"></div>
 
                 </ul> <!-- All quotes END -->
 
@@ -60,8 +64,8 @@
 
     </div> <!-- big wrapper END -->
 
-
-
+    
+    <!-- Adding star rating plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
     <script src="script/script.js"></script>
 </body>

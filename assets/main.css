@@ -49,6 +49,11 @@
     margin-bottom: 20px; 
 }
 
+.red {
+    color: red;
+    background-color: peachpuff;
+    box-shadow: 0px 0px 10px 8px rgba(150, 10, 10, 0.5);
+}
 
 /*==============================  Line Break Containers  =============================*/
 
@@ -146,6 +151,7 @@ h1, h2, h3,h4,h5,h6 {
     border: 1px solid #455791;
     border-radius: 8px;
     padding: 5px;
+    transition: background-color 0.5s ease;
 }        
 
 .add-author:focus, .enter-quote:focus, .btn:hover{
@@ -233,7 +239,26 @@ h1, h2, h3,h4,h5,h6 {
 }
 
 
+/*==============================  STARS  =============================*/
 
+.rating { 
+    display: inline-block;
+    position: relative;
+    float: right;
+    top: -10px;
+}
+        
+.stars {
+    /*color: #BC2847;*/
+    display: inline-block;
+    position: relative;
+}
 
+.stars:hover {
+    cursor: pointer;
+}
 
-
+.clicked, .stars:hover {
+    color: #BC2847;
+    font-weight: bold;
+}

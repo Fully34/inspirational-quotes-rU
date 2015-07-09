@@ -31,7 +31,7 @@
 
             topC : $('<div class="top clearfix"></div>'),
             del  : $('<a href="#" class="delete-btn">DELETE THIS HERE QUOTE! ARGGHHHH! </a>'),
-            p    : $('<p class="rating"></p>'),
+            divR : $('<div class="rating"></div>'),
             liC  : $('<li class="quote-container"></li>'),
             ul   : $('<ul class="quote-content"></ul>'),
             liQ  : $('<li class="quote-text"></li'),
@@ -81,8 +81,7 @@
         $('.all-quotes').html(arr.map(function(obj) {
 
             // if we deleted the Quote object, it won't render since the index for that quote object will be undefined now
-            if (!(obj === undefined) ) {
-
+            if ( (obj !== undefined) ) {
 
             return quoteStruc(obj);
             }
@@ -101,7 +100,7 @@
         // new vars so we don't have to use dot notation all over the place -> could get messy since we will be chaining methods
         var topC = newEls.topC;
         var del = newEls.del;
-        var p = newEls.p;
+        var divR = newEls.divR;
         var liC = newEls.liC;
         var ul = newEls.ul;
         var liQ = newEls.liQ;
@@ -112,15 +111,18 @@
         liQ.text('"' + obj.qtext + '"');
         liA.text (" - " + obj.author);
 
-        // rating content:
-        var ratingText = ['*','*','*','*','*'].join('   ');
-        p.text(ratingText);
+        // create star container / star
+        var star = $('<div class="stars"> &#9760 </div>');
+
+        // append 5 of the star containers to the rate container
+        var rate = divR.append(star.addClass('1'), star.clone().removeClass('1').addClass('2'), star.clone().removeClass('1').addClass('3'), star.clone().removeClass('1').addClass('4'), star.clone().removeClass('1').addClass('5') );
+
 
         // Adding data attribute to delete button --> UNIQUE TO EACH OBJECT
-        del.attr('data-id', obj.idNum)
+        del.attr('data-id', obj.idNum);
 
         // top bar is the delete button and the rating
-        var topBar = topC.append(del, p);
+        var topBar = topC.append(del, rate);
 
         // append topBar to container
         var qContain = liC.append(topBar);
@@ -131,7 +133,7 @@
         // append content to container --> will be appended below the topBar
         var whole = qContain.append(qContent);
 
-        console.log(whole.html());
+        // console.log(whole.html());
 
         // Need to use dummy div b/c .html() only returns the inner html, so we were losing the container for each quote. 
         return $('<div>').append(whole).html();
@@ -160,12 +162,109 @@
         var quoteText = $('.enter-quote').val();
         var quoteAuthor = $('.add-author').val();
 
-        //> last action is a create object --> need this here so it only gets called once
-        lastAction.push({action : "create"});
+        if ( (quoteText.length !== 0) && (quoteAuthor.length !== 0) ) {
 
-        // call quoteGen(); --> function is above here
-        quoteGen(quoteText, quoteAuthor);
+            //> last action is a create object --> need this here so it only gets called once
+            lastAction.push({action : "create"});
+
+            // remove text from the input/textarea
+            $('.enter-quote').val('');
+            $('.add-author').val('');
+
+            // call quoteGen(); --> function is above here
+            quoteGen(quoteText, quoteAuthor);
+
+        } else if ( (quoteText.length === 0) || (quoteAuthor.length === 0) ) {
+
+            if ( (quoteText.length === 0) && (quoteAuthor.length === 0) ) {
+
+                $('input').addClass('red');
+                $('textarea').addClass('red');
+
+                setTimeout(function(){
+
+                    $('input').removeClass('red');
+                    $('textarea').removeClass('red');
+                }, 1000);
+
+            } else if ( quoteAuthor.length === 0 )  {
+
+                $('input').addClass('red');
+
+                setTimeout(function(){
+
+                    $('input').removeClass('red');
+                }, 1000);
+
+            } else if ( quoteText.length === 0 ) {
+
+                $('textarea').addClass('red');
+
+                setTimeout(function(){
+
+                    $('textarea').removeClass('red');
+                }, 1000);
+            }
+        }
     });
+
+
+//============================== RATING ==============================//
+
+    $('.all-quotes').on('mouseenter', '.stars', function() {
+
+        var currentStar = findStarNum( $(this));
+
+        var siblings = $(this).siblings();
+
+        starsAddClicked(siblings, currentStar, starsAddClicked );
+    });
+
+    $('.all-quotes').on('mouseleave', '.stars', function() {
+
+        var currentStar = findStarNum( $(this));
+
+        var siblings = $(this).siblings();
+
+        forEachStars( siblings, currentStar, starsRemoveClicked );
+    });
+
+    // map thru stars array
+    function forEachStars(arr, current, callback ) {
+
+        // REMEMBER THIS > IS AWESOME > ALL HAIL RAPHAEL
+            // forcing the context of the native forEach() method to be jquery array
+            // siblings is a jquery array
+        [].forEach.call(arr, function(el) {
+
+            var $el = $(el);
+
+            if ( findStarNum($el) < current ) {
+
+                callback($el);
+            }
+        });
+    }
+
+    //addClass in forEachStars
+    var starsAddClicked = function(jqElement) {
+
+        jqElement.addClass('clicked');
+    }
+
+    // removeClass in forEachStars
+    var starsRemoveClicked = function(jqElement) {
+
+        jqElement.removeClass('clicked')
+    }
+
+    var findStarNum = function( obj ) {
+
+        return parseInt( obj.attr('class').split(/\s+/)[1] );
+    };
+
+
+
 
 
 //============================== undo last action ==============================//
@@ -174,56 +273,47 @@
 
         event.preventDefault();
 
-        //> set variable to last element in lastAction array and also remove the action object from the array
-        var last = lastAction.pop();
+        //> need to bind all of this to the condition that we are not at our initial state or the page will crash
 
-        if (last.action === 'create') {
-            
-            //> Completely take the element and the object out of the picture
-            quoteArr.pop();
+        if (lastAction.length >= 1){
+            //> set variable to last element in lastAction array and also remove the action object from the array
+            var last = lastAction.pop();
 
-            //> Need to re-run the map function
-            quoteMap(quoteArr);
+            if (last.action === 'create') {
 
-        } else if ( last.action === 'delete') {
+                //> Completely take the object out of the picture > as if it never existed
+                quoteArr.pop();
 
-            //> set variable to last element in deleted array (will be a Quote object) and also remove the object from that array
-            var lastDel = deleted.pop();
+                //> Need to decrement the idNum variable to reflect said non-existence of the object
+                idNum --;
 
-            //> set variable to the index it should have in quoteArr
-            var quoteIndex = lastDel.idNum;
+                //> Need to re-run the map function to render the updated quoteArr
+                quoteMap(quoteArr);
 
-            //> if the last action was 'delete' then, the element at the quoteArr[quoteIndex] should be undefined > so we set it to whatever lastDel Quote object
-            quoteArr[quoteIndex] = lastDel;
+            } else if ( last.action === 'delete') {
 
-            //> re-run the map function with the new quoteArr
-            quoteMap(quoteArr);
+                //> decrementing delNum var for consistency
+                delNum --;
+
+                //> set variable to last element in deleted array (will be a Quote object) and also remove the object from that array
+                var lastDel = deleted.pop();
+
+                //> set variable to the index it should have in quoteArr
+                var quoteIndex = lastDel.idNum;
+
+                //> if the last action was 'delete' then, the element at the quoteArr[quoteIndex] should be undefined > so we set it to whatever lastDel Quote object
+                quoteArr[quoteIndex] = lastDel;
+
+                //> re-run the map function with the new quoteArr
+                quoteMap(quoteArr);
+            }
         }
     });
         
 
 //============================== Delete ==============================//
 
-    // This function will delete the parent container of the anchor we click
-
-    // $('.all-quotes').on('click', '.delete-btn', function(event) {
-
-    //     event.preventDefault();
-        
-    //     var whatWeDeleted = $(this).closest('.quote-container');
-
-    //     whatWeDeleted.removeClass('created');
-
-    //     console.log(whatWeDeleted);
-
-    //     undo = whatWeDeleted;
-
-    //     whatWeDeleted.remove();
-    // })
-        
-    // NOT LOOKING AT JQUERY OBJECTS ANYMORE FOR DELETEING --> LOOK AT THE OBJECTS ARRAY AND FIND THE OBJECT IDNUM THAT CORRESPONDS TO WHICHEVER DELETE BUTTON WE PRESSED
-
-    // This will set our array index to undefined at the index of the data-id the delete button is set to
+    // This will set our array index to undefined at the index of the quoteArr that corresponds to the data-it attribute of the unique delete-btn anchor
         // data-id should always reflect the order that the elements were created in the quoteArr
     $('.all-quotes').on('click', '.delete-btn', function(event) {
 
@@ -249,7 +339,7 @@
         quoteMap(quoteArr); //-> repopulate the array into the quote section
 
         lastAction.push({action : 'delete'}); //> make an array that stores a last action object in the last position of lastAction array
-    })
+    });
 
     // push and sort
     var deletePush = function(obj) {
