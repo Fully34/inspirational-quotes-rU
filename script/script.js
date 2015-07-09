@@ -99,6 +99,9 @@
         var ratingText = ['*','*','*','*','*'].join('   ');
         p.text(ratingText);
 
+        // Adding data attribute to delete button --> UNIQUE TO EACH OBJECT
+        del.attr('data-id', obj['id'])
+
         // top bar is the delete button and the rating
         var topBar = topC.append(del, p);
 
@@ -111,9 +114,9 @@
         // append content to container
         var whole = qContain.append(qContent);
 
-        // console.log(whole);
+        console.log(whole);
 
-        // console.log(whole.html());
+        console.log(whole.html());
 
         // Need to use dummy div b/c .html() only returns the inner html, so we were losing the container for each quote. 
         return $('<div>').append(whole).html();
@@ -181,7 +184,7 @@
     // })
         
     // NOT LOOKING AT JQUERY OBJECTS ANYMORE FOR DELETEING --> LOOK AT THE OBJECTS ARRAY AND FIND THE OBJECT IDNUM THAT CORRESPONDS TO WHICHEVER DELETE BUTTON WE PRESSED
-        
+
 
 
 // });
