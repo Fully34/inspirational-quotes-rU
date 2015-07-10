@@ -79,16 +79,6 @@
     // loop over quoteArr -> call quoteStruc on each element to display it
     var quoteMap = function(arr) {
 
-        if (ratingArr.length > 0) {
-
-            arr = ratingArr;
-
-        } else if (ratingArr.length === 0) {
-
-            arr = quoteArr;
-
-        } 
-
         $('.all-quotes').html(arr.map(function(obj) {
 
             // if we deleted the Quote object, it won't render since the index for that quote object will be undefined now
@@ -172,7 +162,7 @@
 
         //create the text I want (from input/textArea) as variables to pass into quoteGen();
         var quoteText = $('.enter-quote').val();
-        var quoteAuthor =$('.add-author').val();
+        var quoteAuthor = $('.add-author').val();
 
         if ( (quoteText.length !== 0) && (quoteAuthor.length !== 0) ) {
 
@@ -288,7 +278,7 @@
         jqEl.addClass('clicked');
     }
 
-    // ---- NOT USED ----
+    // ---- NOT USED
     // var starsRemoveClicked = function(jqEl) {
     //     jqEl.removeClass('clicked');
     // }
@@ -371,8 +361,6 @@
         });
     }
 
-
-
 //============================== undo last action ==============================//
 
     $('.undo-btn').on('click', function(event) {
@@ -388,7 +376,7 @@
             if (last.action === 'create') {
 
                 //> Need to decrement the idNum variable to reflect said non-existence of the object
-                // idNum --;
+                idNum --;
 
                 //> Completely take the object out of the picture > as if it never existed
                 quoteArr.pop();
@@ -429,16 +417,7 @@
 
         // console.log("identity" + ident);
 
-        var takingOut; // -> set takingOut variable to Quote object we are taking out 
-
-        if (ratingArr.length === 0) { 
-
-             takingOut = quoteArr[ident]; 
-
-        } else if (ratingArr.length > 0) {
-
-            takingOut = ratingArr[ident];
-        }
+        var takingOut = quoteArr[ident]; // -> set takingOut variable to Quote object we are taking out
 
         // prevent the delNum assignment if the object already has one:
         if ( takingOut.delNum === null ) {
@@ -450,15 +429,7 @@
 
         deletePush(takingOut);
 
-        if (ratingArr.length === 0) { 
-
-             quoteArr[ident] = undefined; 
-
-        } else if (ratingArr.length > 0) {
-
-             ratingArr[ident] = undefined; 
-        }
-         // -> remove the Quote object from the quoteArr
+        quoteArr[ident] = undefined; // -> remove the Quote object from the quoteArr
 
         quoteMap(quoteArr); //-> repopulate the array into the quote section
 
@@ -523,12 +494,6 @@
             }
         })
 
-        for (var i = 0; i < ratingArr.length; i++) {
-             
-            var obj = ratingArr[i];
-
-            obj.idNum = i;
-        };
         quoteMap(ratingArr)
     }
 
