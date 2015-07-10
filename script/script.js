@@ -108,8 +108,8 @@
         var liA = newEls.liA;
 
         // text will be dynamically added from $('.enter-quote').val() and $('add-author').val();
-        liQ.text('"' + obj.qtext + '... YAAAARRRRGGGGHHHH"');
-        liA.text (" - " + obj.author);
+        liQ.text(obj.qtext);
+        liA.text (obj.author);
 
         // create star container / star
         var star = $('<div class="stars"> &#9760 </div>');
@@ -136,7 +136,7 @@
         // console.log(whole.html());
 
         // Need to use dummy div b/c .html() only returns the inner html, so we were losing the container for each quote. 
-        return $('<div>').append(whole).html();
+        return $('<div></div>').append(whole).html();
     };
 
 
@@ -159,7 +159,7 @@
         event.preventDefault();
 
         //create the text I want (from input/textArea) as variables to pass into quoteGen();
-        var quoteText = $('.enter-quote').val();
+        var quoteText = '"' + $('.enter-quote').val() + '... YAAAARRRRGGGGHHHH' + '"';
         var quoteAuthor = $('.add-author').val();
 
         if ( (quoteText.length !== 0) && (quoteAuthor.length !== 0) ) {
@@ -209,8 +209,16 @@
     });
 
 
-//============================== RATING ==============================//
 
+    //===========================================================================//
+                            /* ~~~ RATING ~~~ */ 
+    //===========================================================================//
+        
+    // This is DOM element Driven -> Need to make it DATA DRIVEN 
+
+
+//============================== HOVERING ==============================//
+        
     //mouse over functionality
     $('.all-quotes').on('mouseover', '.stars', function() {
 
@@ -238,7 +246,6 @@
             // forcing the context of the native forEach() method to be jquery array
             // siblings is a jquery array
         [].forEach.call(arr, function(el) {
-
 
             var $el = $(el);
 
@@ -283,12 +290,21 @@
 
 
 
-//============================== CLICK EVENT ==============================//
+//============================== CLICKING AND RATING ==============================//
 
-    // want to disable mouse events after click
 
-    //click handler for keeping ratings red
+    //click handler for keeping ratings red and setting rating on our data object in quoteArr
     $('.all-quotes').on('click', '.stars', function() {
+
+        var container = $(this).closest( $('.quote-container') )
+
+        // console.log("container " + container)
+
+        var quoteText = container.find('.quote-text').text();
+
+        // console.log(quoteText);
+
+        var rating = findStarNum( $(this) ); 
 
         var currentStar = findStarNum( $(this) );
 
@@ -301,16 +317,54 @@
 
             $(this).siblings('.stars').removeClass('clicked');
 
+            resetRating(quoteText);
+
         // if we click on a skull that doesn't have the class clicked, we add clicked to this and all sibling elements that come before it
         } else if ( !( $(this).hasClass('clicked') ) ) {
 
             $(this).addClass('clicked');
 
             forEachStars(siblings, currentStar, starsAddClicked);
+
+            // only set rating if the rating hasn't been set
+            setRating(quoteText, rating);
         }
 
+        // return quoteText; 
     });
         
+    // set rating if the skull clicked doesn't have .clicked class
+    var setRating = function(text, rating) {
+
+        // call map on quoteArr and change rating if the qText prop is the same as the quoteText variable we set above
+        [].map.call(quoteArr, function(el){
+
+            for (key in el) {
+
+                if ( el[key] === text ) {
+
+                    // set rating to our rating variable    
+                    el['rating'] = rating;
+                }
+            }
+        });
+    }
+
+    // reset rating if the skull clicked has .clicked class
+    var resetRating = function(text) {
+
+        [].map.call(quoteArr, function(el){
+
+            for (key in el) {
+
+                if ( el[key] === text ) {
+
+                    // set rating to our rating variable    
+                    el['rating'] = null;
+                }
+            }
+        });
+    }
 
 
 //============================== undo last action ==============================//
@@ -327,11 +381,11 @@
 
             if (last.action === 'create') {
 
-                //> Completely take the object out of the picture > as if it never existed
-                quoteArr.pop();
-
                 //> Need to decrement the idNum variable to reflect said non-existence of the object
                 idNum --;
+
+                //> Completely take the object out of the picture > as if it never existed
+                quoteArr.pop();
 
                 //> Need to re-run the map function to render the updated quoteArr
                 quoteMap(quoteArr);
@@ -371,6 +425,7 @@
 
         var takingOut = quoteArr[ident]; // -> set takingOut variable to Quote object we are taking out
 
+        // prevent the delNum assignment if the object already has one:
         if ( takingOut.delNum === null ) {
 
             takingOut['delNum'] = delNum; // -> set delNum prop on the object we take out
