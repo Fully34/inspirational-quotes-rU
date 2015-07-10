@@ -17,7 +17,8 @@
     var delNum = 0;
 
     //> increments each time we create a new Quote object and is bound to that object (all Quote objects have a unique ID)
-    var idNum = 0;
+
+    var idNum = 0; //> WORTHLESS -> THE INDEX IS ALREADY THE ID NUMBER -> BUT NEEDED FOR UNDO BUTTON!!!
 
     //===========================================================================//
                             /* ~~~ Create quote structure ~~~ */ 
@@ -58,7 +59,7 @@
     //============================== Generate quotes to page ==============================//
             
     // quoteGen is used to create an object for each quote 
-        //--> then pushes that obj to an array of objects (idNum prop should match its index)
+        // --> then pushes that obj to an array of objects (idNum prop should match its index)
         // --> then we map over the array of quote objects and call quoteStruc(); on each element
         // --> quoteStruc then nukes and re-paves the quote section with the new quote added at the end. 
     var quoteGen = function(qText, qAuthor){
@@ -78,12 +79,23 @@
     // loop over quoteArr -> call quoteStruc on each element to display it
     var quoteMap = function(arr) {
 
+        if (ratingArr.length > 0) {
+
+            arr = ratingArr;
+
+        } else if (ratingArr.length === 0) {
+
+            arr = quoteArr;
+
+        } 
+
         $('.all-quotes').html(arr.map(function(obj) {
 
             // if we deleted the Quote object, it won't render since the index for that quote object will be undefined now
             if ( (obj !== undefined) ) {
 
             return quoteStruc(obj);
+
             }
 
         }).join('') );
@@ -159,8 +171,8 @@
         event.preventDefault();
 
         //create the text I want (from input/textArea) as variables to pass into quoteGen();
-        var quoteText = '"' + $('.enter-quote').val() + '... YAAAARRRRGGGGHHHH' + '"';
-        var quoteAuthor = $('.add-author').val();
+        var quoteText = $('.enter-quote').val();
+        var quoteAuthor =$('.add-author').val();
 
         if ( (quoteText.length !== 0) && (quoteAuthor.length !== 0) ) {
 
@@ -276,19 +288,16 @@
         jqEl.addClass('clicked');
     }
 
-    //removeClass in forEachStars
-    var starsRemoveClicked = function(jqEl) {
-
-        jqEl.removeClass('clicked');
-    }
+    // ---- NOT USED ----
+    // var starsRemoveClicked = function(jqEl) {
+    //     jqEl.removeClass('clicked');
+    // }
 
     var findStarNum = function( obj ) {
 
         // returns the numeric class number as an int
         return parseInt( obj.attr('class').split(/\s+/)[1] );
     };
-
-
 
 //============================== CLICKING AND RATING ==============================//
 
@@ -298,14 +307,12 @@
 
         var container = $(this).closest( $('.quote-container') )
 
-        // console.log("container " + container)
-
+        // this is the text in the <li class="quote-text"> that's associated with the star we click
         var quoteText = container.find('.quote-text').text();
-
-        // console.log(quoteText);
 
         var rating = findStarNum( $(this) ); 
 
+        // same as rating, but renamed for semantics
         var currentStar = findStarNum( $(this) );
 
         var siblings = $(this).siblings();
@@ -329,8 +336,6 @@
             // only set rating if the rating hasn't been set
             setRating(quoteText, rating);
         }
-
-        // return quoteText; 
     });
         
     // set rating if the skull clicked doesn't have .clicked class
@@ -359,12 +364,13 @@
 
                 if ( el[key] === text ) {
 
-                    // set rating to our rating variable    
+                    // set rating to null    
                     el['rating'] = null;
                 }
             }
         });
     }
+
 
 
 //============================== undo last action ==============================//
@@ -382,7 +388,7 @@
             if (last.action === 'create') {
 
                 //> Need to decrement the idNum variable to reflect said non-existence of the object
-                idNum --;
+                // idNum --;
 
                 //> Completely take the object out of the picture > as if it never existed
                 quoteArr.pop();
@@ -423,7 +429,16 @@
 
         // console.log("identity" + ident);
 
-        var takingOut = quoteArr[ident]; // -> set takingOut variable to Quote object we are taking out
+        var takingOut; // -> set takingOut variable to Quote object we are taking out 
+
+        if (ratingArr.length === 0) { 
+
+             takingOut = quoteArr[ident]; 
+
+        } else if (ratingArr.length > 0) {
+
+            takingOut = ratingArr[ident];
+        }
 
         // prevent the delNum assignment if the object already has one:
         if ( takingOut.delNum === null ) {
@@ -435,7 +450,15 @@
 
         deletePush(takingOut);
 
-        quoteArr[ident] = undefined; // -> remove the Quote object from the quoteArr
+        if (ratingArr.length === 0) { 
+
+             quoteArr[ident] = undefined; 
+
+        } else if (ratingArr.length > 0) {
+
+             ratingArr[ident] = undefined; 
+        }
+         // -> remove the Quote object from the quoteArr
 
         quoteMap(quoteArr); //-> repopulate the array into the quote section
 
@@ -460,5 +483,62 @@
         });
 
     }
+
+//===========================================================================//
+                        /* ~~~ SORT BY RATING - NEW PAGE~~~ */ 
+//===========================================================================//
+
+    // will be a copy of the quoteArr, but sorted by rating instead
+        // maybe have it link to a new page that is always sorted by rating
+        // switching back and forth on the fly will be a pain in the ass 
+    var ratingArr = [];
+
+    var sortByRating = function() {
+
+        debugger;
+
+        ratingArr = quoteArr.slice(); 
+
+        ratingArr = ratingArr.sort(function(a,b) {
+
+            if (a.rating > b.rating) {
+
+                return -1;
+
+            } else if (a.rating < b.rating) {
+
+                return 1;
+
+            } else if (a.rating === b.rating) {
+
+                if(a.idnum > b.idnum) {
+
+                    return 1;
+
+                } else if ( a.idnum < b.idnum ) {
+
+                    return -1;
+
+                } 
+            }
+        })
+
+        for (var i = 0; i < ratingArr.length; i++) {
+             
+            var obj = ratingArr[i];
+
+            obj.idNum = i;
+        };
+        quoteMap(ratingArr)
+    }
+
+
+
+
+
+
+
+
+
 
 // });
