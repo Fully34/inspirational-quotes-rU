@@ -29,10 +29,10 @@
 
         var els =  {
 
+            liC  : $('<li class="quote-container"></li>'),
             topC : $('<div class="top clearfix"></div>'),
             del  : $('<a href="#" class="delete-btn">DELETE THIS HERE QUOTE! ARGGHHHH! </a>'),
             divR : $('<div class="rating"></div>'),
-            liC  : $('<li class="quote-container"></li>'),
             ul   : $('<ul class="quote-content"></ul>'),
             liQ  : $('<li class="quote-text"></li'),
             br   : $('<br>'),
@@ -75,7 +75,7 @@
 
 
 
-        // loop over quoteArr -> call quoteStruc on each element to display it
+    // loop over quoteArr -> call quoteStruc on each element to display it
     var quoteMap = function(arr) {
 
         $('.all-quotes').html(arr.map(function(obj) {
@@ -242,6 +242,8 @@
 
             var $el = $(el);
 
+            // treating our rating container div as an array of sorts
+                // each have a numbered class on a sub-div (1-5)
             if ( findStarNum($el) < current ) {
 
                 callback($el);
@@ -262,13 +264,20 @@
     }
 
     //addClass in forEachStars
-    var starsAddHovered = function(jqEl) {
+    var starsAddClicked = function(jqEl) {
 
         jqEl.addClass('clicked');
     }
 
+    //removeClass in forEachStars
+    var starsRemoveClicked = function(jqEl) {
+
+        jqEl.removeClass('clicked');
+    }
+
     var findStarNum = function( obj ) {
 
+        // returns the numeric class number as an int
         return parseInt( obj.attr('class').split(/\s+/)[1] );
     };
 
@@ -277,20 +286,29 @@
 //============================== CLICK EVENT ==============================//
 
     // want to disable mouse events after click
+
+    //click handler for keeping ratings red
     $('.all-quotes').on('click', '.stars', function() {
 
         var currentStar = findStarNum( $(this) );
 
         var siblings = $(this).siblings();
 
+        // if we click on any skull that has the class clicked, remove clicked from this and all its sibling elements
         if ( $(this).hasClass('clicked') ) {
 
             $(this).removeClass('clicked');
 
+            $(this).siblings('.stars').removeClass('clicked');
+
+        // if we click on a skull that doesn't have the class clicked, we add clicked to this and all sibling elements that come before it
         } else if ( !( $(this).hasClass('clicked') ) ) {
 
             $(this).addClass('clicked');
+
+            forEachStars(siblings, currentStar, starsAddClicked);
         }
+
     });
         
 
