@@ -108,7 +108,7 @@
         var liA = newEls.liA;
 
         // text will be dynamically added from $('.enter-quote').val() and $('add-author').val();
-        liQ.text('"' + obj.qtext + '"');
+        liQ.text('"' + obj.qtext + '... YAAAARRRRGGGGHHHH"');
         liA.text (" - " + obj.author);
 
         // create star container / star
@@ -211,22 +211,24 @@
 
 //============================== RATING ==============================//
 
-    $('.all-quotes').on('mouseenter', '.stars', function() {
+    //mouse over functionality
+    $('.all-quotes').on('mouseover', '.stars', function() {
 
         var currentStar = findStarNum( $(this));
 
         var siblings = $(this).siblings();
 
-        starsAddClicked(siblings, currentStar, starsAddClicked );
+        forEachStars(siblings, currentStar, starsAddHovered );
     });
 
-    $('.all-quotes').on('mouseleave', '.stars', function() {
+    //mouse out functionality
+    $('.all-quotes').on('mouseout', '.stars', function() {
 
         var currentStar = findStarNum( $(this));
 
         var siblings = $(this).siblings();
 
-        forEachStars( siblings, currentStar, starsRemoveClicked );
+        forEachStars( siblings, currentStar, starsRemoveHovered );
     });
 
     // map thru stars array
@@ -236,6 +238,7 @@
             // forcing the context of the native forEach() method to be jquery array
             // siblings is a jquery array
         [].forEach.call(arr, function(el) {
+
 
             var $el = $(el);
 
@@ -247,15 +250,21 @@
     }
 
     //addClass in forEachStars
-    var starsAddClicked = function(jqElement) {
+    var starsAddHovered = function(jqEl) {
 
-        jqElement.addClass('clicked');
+        jqEl.addClass('hovered');
     }
 
     // removeClass in forEachStars
-    var starsRemoveClicked = function(jqElement) {
+    var starsRemoveHovered = function(jqEl) {
 
-        jqElement.removeClass('clicked')
+        jqEl.removeClass('hovered')
+    }
+
+    //addClass in forEachStars
+    var starsAddHovered = function(jqEl) {
+
+        jqEl.addClass('clicked');
     }
 
     var findStarNum = function( obj ) {
@@ -265,6 +274,25 @@
 
 
 
+//============================== CLICK EVENT ==============================//
+
+    // want to disable mouse events after click
+    $('.all-quotes').on('click', '.stars', function() {
+
+        var currentStar = findStarNum( $(this) );
+
+        var siblings = $(this).siblings();
+
+        if ( $(this).hasClass('clicked') ) {
+
+            $(this).removeClass('clicked');
+
+        } else if ( !( $(this).hasClass('clicked') ) ) {
+
+            $(this).addClass('clicked');
+        }
+    });
+        
 
 
 //============================== undo last action ==============================//

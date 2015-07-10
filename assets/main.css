@@ -258,7 +258,10 @@ h1, h2, h3,h4,h5,h6 {
     cursor: pointer;
 }
 
-.clicked, .stars:hover {
+.hovered, .stars:hover {
     color: #BC2847;
-    font-weight: bold;
+}
+
+.clicked {
+    color: #BC2847;
 }
